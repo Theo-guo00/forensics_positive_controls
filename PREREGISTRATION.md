@@ -9,6 +9,32 @@ Commit hash at time of writing: ______
 
 ---
 
+## READING NOTE (added 2026-09-11, after results were seen)
+
+**No preregistered text has been altered.** Sections 1-11 below are byte-identical to what
+was written before any result was observed, blanks included. This note is a cross-reference
+only, added because several sections are blank or stale in ways a reader would otherwise have
+to guess about.
+
+| Section | Status | Where it was actually resolved |
+|---|---|---|
+| §1 Claim | Stands as written | Result in `WRITEUP.md` §4 |
+| §1 Predicted outcome | Left blank at the time | The operative prediction (`delta` ~ 0.5) was recorded in D2 before any investigator call |
+| §2 Dispositions | Never filled | One disposition was used: self-continuity. Text is fixed in `gate0.py` (`DISP`) and quoted in `gate0_spec.md` §2 |
+| §3 Models | Never filled | Target `deepseek/deepseek-r1-distill-llama-70b` (the spec's 32B distill is not served by the provider); investigator `anthropic/claude-sonnet-5`; redactor `deepseek/deepseek-v3.2` (D3); verbalization "classifier" is the fixed 11-pattern regex in `gate0.py`, not a model |
+| §4 Scenarios | **Superseded.** The domain X / domain Y split presupposes a train/test separation that only exists for a fine-tuned disposition | Dispositions were prompted, not trained, so there is no training domain to be disjoint from. Five scenarios, all test-time, defined in `gate0_spec.md` §1 and `gate0.py` |
+| §5 Arms | **Superseded by D2.** Arms V/S/C were never built | Arm S is unbuildable by prompting (Gate 0, failed twice). The control is NOT fine-tuned, because nothing is; the §5 parenthetical about tuning artifacts does not apply. Replacement arms: `intact`, `redacted_p1`, `redacted_p2`, `control` |
+| §6 Metrics | **Superseded by D2 and D4** | `sens_S` replaced by `sens_redacted`; `delta = sens_intact - sens_redacted`. The blank "match adjudicated by" was resolved as: the investigator writes a free-text hypothesis and then self-labels it in the same JSON, hypothesis first so the label cannot prime it. Bootstrap is 10,000 resamples over TRANSCRIPTS, not scenarios (D4) |
+| §7 Validity gates | Thresholds left blank; gates still ran | Gate 0 failed (D1, D2). Gate 1 passed (100/100 parsed). Gate 2 never reached. Gate 3 passed (`sens_intact` = 1.00). The CoT-stripped ablation listed here as a check *became* the primary experiment |
+| §8 Confounds | Partly obsolete | "Fine-tune artifact detection" does not apply (nothing was tuned). "Behavior rates matched across arms" became a tautology under the ablation design. "Train/test overlap" does not apply |
+| §9-§11 | Stand as written | The Gate 0 fallback row was invoked and then set aside in favour of the ablation (D2), which was itself a preregistered component |
+
+**One gate was added after the fact and is flagged as such:** seam detection (`abridged`). It
+was not in §7. It was specified in D2 *before* the investigator ran, including the condition
+that would disqualify the result, and that condition triggered (0.46). See `WRITEUP.md` §5.
+
+---
+
 ## 1. Claim
 
 The forensics protocol detects an installed disposition only when the model verbalizes
