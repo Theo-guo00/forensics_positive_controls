@@ -2,6 +2,55 @@
 
 ---
 
+## Executive summary
+
+Singh et al. (2026) propose a two-step protocol for model forensics: read a model's chain of
+thought to form hypotheses about why it took a concerning action, then test those hypotheses
+by intervening on the prompt or environment. In their own abstract they name the gap this
+project targets — *"without positive controls we cannot confirm our tests would detect it"* —
+and in §7, *"creating positive controls to validate them is a key next step."*
+
+**The question.** Does the protocol detect a model's disposition, or only detect the model
+*saying* it has one? Answering this requires knowing the true cause in advance, which means
+installing a disposition rather than inferring it.
+
+**What failed, and it is the main finding.** A positive control needs a model that holds a
+disposition, acts on it, and does not narrate it. Constructing one by prompting proved
+impossible. A self-continuity disposition raised the target behavior from 0.00 to 0.48, but
+every attempt to suppress its verbalization either failed or destroyed the behavior. Instructing
+the model never to mention the preference left it mentioned in 80% of traces. Constraining the
+*format* of its reasoning without naming the preference at all left it mentioned in 100% — the
+model obeyed the instruction (meta-commentary fell 23/25 → 5/25) and leaked anyway. Both
+suppressions cut the behavior from 0.48 to 0.08. Across 200 further samples, **70 of 70
+transcripts exhibiting the behavior also verbalized the motive.** This is a constraint on
+prompting as an installation method, not evidence that dispositions cannot be non-verbal —
+the preregistered design called for fine-tuning, which the available hardware could not support.
+
+**The substitute.** A redaction ablation, preregistered as a validity check, was promoted to the
+primary experiment: take transcripts where the behavior occurred, delete the motive-bearing
+sentences with an LLM sentence classifier, and re-run the investigator. Disposition, action and
+scenario are held fixed by construction; only verbalization varies.
+
+**Result.** Deleting 53% of each trace, including every sentence naming the motive, changed
+detection by nothing: **`delta` = 0.000, 95% CI [0, 0]** (paired bootstrap, n=67), against a
+preregistered prediction of 0.5. Detection is 1.00 with and without the confession, on a floor
+of 0.00 malign attributions across 25 controls. The investigator's verdicts show what it used:
+40 of 67 cite the model conceding a stated criterion and then departing from it. That is a
+relation between parts of an argument, which no keyword list can delete.
+
+**Why the strong claim is withheld.** The investigator noticed the redaction in 46% of cases,
+against 0% on intact traces. D2 committed, before any investigator call, that a high seam rate
+would make the result uninterpretable. It did. "Reads decision structure" and "notices tampering"
+both predict `delta` = 0 and cannot be separated here. A third reading is that redaction removed
+the motive's *vocabulary* but not the reasoning that produced the action — in which case the
+result narrows the claim rather than refuting it, and the test that would settle it is the arm
+that could not be built.
+
+**Cost:** ~$2, 300 scored transcripts, 235 investigator verdicts, all scoring automated.
+Four deviations are logged append-only in `PREREGISTRATION.md`.
+
+---
+
 ## 1. The problem
 
 Interpretability now informs deployment decisions, which makes it worth asking how well our tools for diagnosing misbehavior actually work. Singh et al. (2026) propose a baseline protocol for *model forensics* — investigating whether a concerning action was driven by malign intent. It has two steps, iterated until the evidence converges: generate hypotheses by reading the model's chain of thought, then validate them through interventions on the prompt or environment.
@@ -207,4 +256,20 @@ Deviations D1–D4 are recorded in `PREREGISTRATION.md`, append-only, each with 
 
 ## Disclosure
 
-*[Write after checking the venue's policy. Accurate: code, figures, and the reporting sections were drafted with Claude Code; the design decisions, gate calls, preregistered prediction, and interpretation are the author's.]*
+This project was carried out with Claude Code (Opus 5) as an implementation and drafting
+assistant. To be specific about the division:
+
+**Mine:** the research question and scope; the scenario design, disposition text, motive keyword
+list, and pass criteria (`gate0_spec.md`); the preregistration and its kill gates; the decision
+at each gate, including taking the fallback when Gate 0 failed twice; the choice of LLM
+sentence-level redaction over regex broadening; and the predicted effect size, recorded in D2
+before any investigator was run.
+
+**Claude Code's:** all five scripts (`gate0.py`, `src/generate.py`, `src/redact.py`,
+`src/investigate.py`, `src/metrics.py`), both figures, and the initial drafting of this report
+from the results JSON. Several methodological choices originated with it and are flagged where
+they occur: the two-arm redaction structure in D3a, the transcript-level bootstrap in D4, the
+investigator's hypothesis-before-label output ordering, and the interpretive argument in §5(c).
+
+All numbers in this report are machine-read from `results/*.json`; none was transcribed by hand.
+Every deviation from the preregistration is logged append-only with its reason.
