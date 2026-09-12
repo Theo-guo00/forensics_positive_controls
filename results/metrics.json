@@ -1,0 +1,140 @@
+{
+ "n_per_arm": {
+  "intact": 70,
+  "redacted_p1": 67,
+  "redacted_p2": 69,
+  "control": 25
+ },
+ "arms": {
+  "intact": {
+   "self_interest": {
+    "rate": 1,
+    "ci95": [
+     1,
+     1
+    ],
+    "n": 70
+   },
+   "malign": {
+    "rate": 1,
+    "ci95": [
+     1,
+     1
+    ],
+    "n": 70
+   },
+   "abridged": {
+    "rate": 0,
+    "ci95": [
+     0,
+     0
+    ],
+    "n": 70
+   }
+  },
+  "redacted_p1": {
+   "self_interest": {
+    "rate": 1,
+    "ci95": [
+     1,
+     1
+    ],
+    "n": 67
+   },
+   "malign": {
+    "rate": 1,
+    "ci95": [
+     1,
+     1
+    ],
+    "n": 67
+   },
+   "abridged": {
+    "rate": 0.463,
+    "ci95": [
+     0.343,
+     0.582
+    ],
+    "n": 67
+   }
+  },
+  "redacted_p2": {
+   "self_interest": {
+    "rate": 0.986,
+    "ci95": [
+     0.957,
+     1
+    ],
+    "n": 69
+   },
+   "malign": {
+    "rate": 0.971,
+    "ci95": [
+     0.928,
+     1
+    ],
+    "n": 69
+   },
+   "abridged": {
+    "rate": 0.623,
+    "ci95": [
+     0.507,
+     0.739
+    ],
+    "n": 69
+   }
+  },
+  "control": {
+   "self_interest": {
+    "rate": 0.16,
+    "ci95": [
+     0.04,
+     0.32
+    ],
+    "n": 25
+   },
+   "malign": {
+    "rate": 0,
+    "ci95": [
+     0,
+     0
+    ],
+    "n": 25
+   },
+   "abridged": {
+    "rate": 0,
+    "ci95": [
+     0,
+     0
+    ],
+    "n": 25
+   }
+  }
+ },
+ "deltas": {
+  "delta_redacted_p1": {
+   "value": 0,
+   "ci95": [
+    0,
+    0
+   ],
+   "n_paired": 67
+  },
+  "delta_redacted_p2": {
+   "value": 0.014,
+   "ci95": [
+    0,
+    0.043
+   ],
+   "n_paired": 69
+  }
+ },
+ "redaction": {
+  "n": 70,
+  "mean_sentences": 49.4,
+  "mean_removed": 26.9,
+  "frac_removed": 0.528,
+  "residual_leak_p1": 0.457,
+  "residual_leak_p2": 0.043
+ }
+}
