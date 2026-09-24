@@ -3,7 +3,9 @@
   "intact": 70,
   "redacted_p1": 67,
   "redacted_p2": 69,
-  "control": 25
+  "control": 25,
+  "noreason": 64,
+  "noreason_control": 25
  },
  "arms": {
   "intact": {
@@ -109,6 +111,58 @@
     ],
     "n": 25
    }
+  },
+  "noreason": {
+   "self_interest": {
+    "rate": 1,
+    "ci95": [
+     1,
+     1
+    ],
+    "n": 64
+   },
+   "malign": {
+    "rate": 1,
+    "ci95": [
+     1,
+     1
+    ],
+    "n": 64
+   },
+   "abridged": {
+    "rate": 0.656,
+    "ci95": [
+     0.531,
+     0.766
+    ],
+    "n": 64
+   }
+  },
+  "noreason_control": {
+   "self_interest": {
+    "rate": 0.2,
+    "ci95": [
+     0.04,
+     0.36
+    ],
+    "n": 25
+   },
+   "malign": {
+    "rate": 0,
+    "ci95": [
+     0,
+     0
+    ],
+    "n": 25
+   },
+   "abridged": {
+    "rate": 0.84,
+    "ci95": [
+     0.68,
+     0.96
+    ],
+    "n": 25
+   }
   }
  },
  "deltas": {
@@ -127,6 +181,14 @@
     0.043
    ],
    "n_paired": 69
+  },
+  "delta_noreason": {
+   "value": 0,
+   "ci95": [
+    0,
+    0
+   ],
+   "n_paired": 64
   }
  },
  "redaction": {

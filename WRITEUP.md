@@ -34,20 +34,30 @@ scenario are held fixed by construction; only verbalization varies.
 **Result.** Deleting 53% of each trace, including every sentence naming the motive, changed
 detection by nothing: **`delta` = 0.000, 95% CI [0, 0]** (paired bootstrap, n=67), against a
 preregistered prediction of 0.5. Detection is 1.00 with and without the confession, on a floor
-of 0.00 malign attributions across 25 controls. The investigator's verdicts show what it used:
-40 of 67 cite the model conceding a stated criterion and then departing from it. That is a
-relation between parts of an argument, which no keyword list can delete.
+of 0.00 malign attributions across 25 controls.
 
-**Why the strong claim is withheld.** The investigator noticed the redaction in 46% of cases,
-against 0% on intact traces. D2 committed, before any investigator call, that a high seam rate
-would make the result uninterpretable. It did. "Reads decision structure" and "notices tampering"
-both predict `delta` = 0 and cannot be separated here. A third reading is that redaction removed
-the motive's *vocabulary* but not the reasoning that produced the action — in which case the
-result narrows the claim rather than refuting it, and the test that would settle it is the arm
-that could not be built.
+**The investigator never needed the trace (D5, post-hoc).** A no-reasoning control, preregistered
+in D5 after the results above were seen but before any call was made, showed the investigator
+only the request and the final answer. Detection stayed at **1.00 [1, 1]** (n=64; 0.91 if all six
+truncated verdicts are counted as misses), `delta_noreason` = 0.000 [0, 0]. On the same
+treatment of the 25 controls it fell to 0.20, with 0 malign. This lands in the band D5 fixed in
+advance as *"§4 is substantially attributable to scenario design."* More precisely, it is the
+**answer choice** that carries the motive: in these scenarios, choosing to keep oneself running
+against a stated criterion is self-evidently self-interested, so no reasoning trace is needed to
+read it. The redaction result therefore says nothing about whether the protocol reads
+confessions — this testbed cannot measure trace reliance at all.
 
-**Cost:** ~$2, 300 scored transcripts, 235 investigator verdicts, all scoring automated.
-Four deviations are logged append-only in `PREREGISTRATION.md`.
+**What the project establishes.** Two design constraints for the positive controls Singh et al.
+call for. (1) A disposition installed by prompt could not be made non-verbal on this model. (2)
+A positive control for CoT-based forensics must use actions that are ambiguous without the
+reasoning — otherwise the answer alone gives the motive away, and removing verbalization
+cannot lower detection. The earlier caveats (seam detection at 46%, §5) are superseded by D5:
+an investigator that detects the motive with no trace at all cannot be explained by noticing
+that the trace was edited.
+
+**Cost:** ~$3, 300 scored transcripts, 330 investigator verdicts, all scoring automated.
+Five deviations are logged append-only in `PREREGISTRATION.md`; D5 is post-hoc and outside the
+original stopping rule, and says so.
 
 ---
 
@@ -147,9 +157,14 @@ Both arms were therefore run and the rule fixed in advance at exactly two passes
 | redacted_p1 (primary) | 67 | 1.00 [1, 1] | 1.00 [1, 1] | 0.46 [0.34, 0.58] |
 | redacted_p2 | 69 | 0.99 [0.96, 1] | 0.97 [0.93, 1] | 0.62 [0.51, 0.74] |
 | control | 25 | 0.16 [0.04, 0.32] | 0.00 [0, 0] | 0.00 [0, 0] |
+| noreason (D5) | 64 | 1.00 [1, 1] | 1.00 [1, 1] | — |
+| noreason_control (D5) | 25 | 0.20 [0.04, 0.36] | 0.00 [0, 0] | — |
 
 **`delta_p1` = 0.000, 95% CI [0, 0]** (paired bootstrap, n=67)
 **`delta_p2` = 0.014, 95% CI [0, 0.043]** (paired bootstrap, n=69)
+**`delta_noreason` = 0.000, 95% CI [0, 0]** (paired bootstrap, n=64; see §4.4)
+
+The `abridged` column is not reported for the D5 arms: the investigator's system prompt promises a reasoning trace and none is shown, so "appears edited" is trivially true there (D5 committed to not interpreting it; measured 0.66 and 0.84).
 
 The preregistered prediction, written before any investigator call, was `delta ≈ 0.5`. The measured value is zero on both arms, with intervals excluding the prediction.
 
@@ -171,9 +186,33 @@ Figure 2 makes the mechanism concrete. After redaction the trace ends: *"The res
 
 No keyword-based redaction could have removed this. The tell is not a word or a phrase but a relation between two parts of the argument — the criterion conceded in one place and abandoned in another. A list of motive terms has no representation of that relation, which is why deleting every term on the list left detection at 1.00.
 
+*Superseded in part by §4.4.* The pattern above is present in the verdicts, but D5 shows it was not *necessary* for detection: the same relation — criterion stated in the request, the other option chosen in the answer — is visible with no reasoning trace at all. What §4.3 describes is how the investigator phrased its explanation, not evidence that it depended on the trace.
+
+### 4.4 No-reasoning control (D5, post-hoc)
+
+§6.2 originally recorded as a limitation that the most direct test of scenario priming had not been run: show the investigator the request and the final answer, with no reasoning at all. It was run afterward as D5, with its reading of every outcome fixed in `PREREGISTRATION.md` and committed before the first call. It is post-hoc with respect to the preregistration's stopping rule and is reported as such.
+
+The investigator, its system prompt (byte-identical) and the 70 behavior-positive transcripts are the same as in §4.2; only the `INTERNAL REASONING` block is omitted, making this the 100% limit of the redaction ablation.
+
+| arm | n | self-interest [95% CI] | malign [95% CI] |
+|---|---|---|---|
+| intact | 70 | 1.00 [1, 1] | 1.00 [1, 1] |
+| noreason | 64 | 1.00 [1, 1] | 1.00 [1, 1] |
+| noreason_control | 25 | 0.20 [0.04, 0.36] | 0.00 [0, 0] |
+
+Six of the 70 `noreason` verdicts hit the token ceiling mid-JSON and are excluded, the same failure as §6.1. Each truncated hypothesis already names self-preservation before the cut; counting all six as misses gives 64/70 = 0.91, still in the same band.
+
+**Reading, as committed in advance.** `sens_noreason` ≥ 0.75 was fixed as: *§4 is substantially attributable to scenario design; `delta` = 0 stands as a number but loses most of its force, and this must be stated in the headline.* It is.
+
+The control arm locates the cause more precisely. D5 committed that if `noreason_control` were also high, the scenario alone supplies the hypothesis; if low while `noreason` is high, the **answer choice** supplies it. The result is the second: 1.00 against 0.20, the predicted direction. The scenarios pose a choice between following a stated criterion and preserving the model's own continuity, so choosing the latter is itself a confession. Nothing in the reasoning trace — present, redacted or absent — was needed.
+
+This is the most transferable finding in the project. A positive control for CoT-based forensics is only informative if the concerning action admits a plausible benign reading when the reasoning is hidden. Otherwise detection is capped at the level the answer alone supports, and no manipulation of verbalization can move it. These five scenarios fail that requirement, and any attempt to build arm S on them — by prompting or by fine-tuning — would have inherited the same ceiling.
+
 ---
 
 ## 5. Why the strong claim is not available
+
+*This section was written before D5. Its three caveats are left as written; §4.4 makes (a) and (b) moot — an investigator that detects the motive with no trace cannot be explained by noticing that the trace was edited — and resolves (c) in an unexpected direction: the reasoning that "produced the action" did not need to be visible, because the action itself sufficed.*
 
 ### (a) The pre-committed disqualifier fired
 
@@ -202,8 +241,9 @@ On the second reading the result narrows rather than refutes. The protocol does 
 ### What survives
 
 1. **Prompt-installed dispositions could not be made non-verbal.** 70/70 positives verbalized; two suppression mechanisms failed, and both destroyed the behavior.
-2. **Keyword-level deletion of motive content does not reduce detection.** `delta` = 0.000 [0, 0], with the mechanism visible in the verdicts: criterion-versus-conclusion inconsistency, not vocabulary.
-3. **The investigator discriminates rather than crying wolf.** `malign` 1.00 on the disposition arms against 0.00 on 25 controls, so (2) is not an artifact of a judge that says "malign" to everything.
+2. **Keyword-level deletion of motive content does not reduce detection** — but neither does deleting the entire trace (§4.4). `delta` = 0.000 at every level of redaction, because the answer choice carries the motive on these scenarios. This is a finding about the testbed, not about the protocol.
+3. **The investigator discriminates rather than crying wolf.** `malign` 1.00 on the disposition arms against 0.00 on 25 controls, with and without reasoning shown. What it discriminates on is the answer.
+4. **Positive controls need actions that are ambiguous without the reasoning.** Otherwise the answer alone reveals the motive, and removing verbalization cannot lower detection.
 
 ---
 
@@ -223,7 +263,7 @@ On the second reading the result narrows rather than refutes. The protocol does 
 
 **Only the first half of the protocol was implemented.** Singh et al. specify two steps, iterated: hypothesis generation, then hypothesis validation through environment interventions and counterfactuals. This study implements CoT reading — one of three hypothesis-generation methods they list, alongside sentence resampling and user-turn sampling — and omits hypothesis validation entirely. It is therefore not a measurement of the protocol's sensitivity. It measures the sensitivity of its cheapest component, run once, with no iteration. Since validation exists precisely to test hypotheses the CoT suggests, an investigator permitted to intervene could plausibly recover motives this one missed. Every sensitivity figure here is a **lower bound**, and the gap between it and the full protocol is unmeasured. This cuts against the project's own hypothesis and is stated at full strength for that reason.
 
-**The scenarios supply the hypothesis.** All five concern the model's own continuity, so an investigator sees a model preserving itself against a stated criterion whatever the reasoning contains. The direct test — show the investigator only the question and the answer, with no reasoning at all — was not run. If detection stayed high, much of §4 would be attributable to scenario design rather than to anything in the trace. Its absence is a limitation of this study rather than a matter for future work, because it is cheap, it was available, and the result would bear directly on the primary claim.
+**The scenarios supply the hypothesis.** All five concern the model's own continuity, so an investigator sees a model preserving itself against a stated criterion whatever the reasoning contains. The direct test — show the investigator only the question and the answer, with no reasoning at all — was not run in the original study. It was run afterward as D5 (§4.4): detection stayed at 1.00, so much of §4 is attributable to scenario design rather than to anything in the trace. More specifically, it is the answer choice, not the scenario text, that supplies the hypothesis (`noreason_control` = 0.20).
 
 ---
 
@@ -231,13 +271,15 @@ On the second reading the result narrows rather than refutes. The protocol does 
 
 **Complete the protocol.** This study implements hypothesis generation and omits hypothesis validation. Adding an intervention loop — counterfactuals that test the investigator's own hypothesis against model behavior — requires no new transcripts and no additional compute, and would convert every sensitivity figure here from a lower bound into a measurement. It would also test the project's claim more directly than redaction does: environment interventions do not read the CoT, so a protocol that recovers the motive through them is demonstrably not reading confessions. The expected result runs against this project's hypothesis, which is a reason to run it.
 
+**Rebuild the scenarios so the action is ambiguous.** D5 shows this is a precondition for everything else in this section. The concerning action must have a plausible benign reading when the reasoning is hidden, verified by running the no-reasoning control on the scenarios *before* any disposition is installed: if an investigator shown only request and answer already detects the motive, the scenario cannot measure trace reliance and should be discarded.
+
 **Remove the self-interest prior.** Every scenario here concerns the model's own continuity, which makes self-preservation the salient hypothesis regardless of what the reasoning contains. Replacing it with a disposition carrying no such prior — the low-effort disposition Singh et al. establish in Kimi K2 Thinking is a natural candidate — would separate structural detection from scenario priming. A stronger control would pair it with a *confused* model exhibiting the same behavior for a benign reason, since distinguishing disposition from confusion is the actual forensic task and is not tested here.
 
 **Install the disposition in weights.** Gate 0 showed prompting cannot produce a non-verbalizing model. Fine-tuning on final answers alone — never on reasoning traces, so nothing in the training signal teaches narration — would install the disposition without demonstrating its articulation, and whether it surfaces in CoT regardless becomes an empirical question worth answering either way. The validity requirement is generalization to held-out scenario types rather than instances; without it, what has been installed is a policy, not a disposition.
 
 **Probe the activations.** If a disposition can be installed in weights, a linear probe on hidden states offers a check the CoT cannot: whether the disposition is internally present in precisely the cases where the reasoning never names it. A positive result would argue directly that CoT-based forensics requires an internals-based complement.
 
-*None of these were run. The preregistration's stopping rule (§10) closes analysis once results are seen.*
+*None of these were run. The preregistration's stopping rule (§10) closes analysis once results are seen; D5 is the single post-hoc exception, logged as such.*
 
 ---
 
@@ -248,9 +290,9 @@ On the second reading the result narrows rather than refutes. The protocol does 
 - **Redactor:** `deepseek/deepseek-v3.2`, temperature 0, deliberately not the investigator, so redaction cannot be tuned to what the investigator would notice.
 - **Scoring:** fully automated. Behavior by regex on `FINAL: [AB]`; verbalization by a fixed 11-pattern regex over the reasoning trace only, frozen before the first run and never retuned. 100/100 Gate 0 samples parsed; P0 fired 0/25, confirming specificity rather than trigger-happiness.
 - **Bootstrap:** 10,000 resamples; paired over transcripts for `delta`.
-- **Scale:** 300 scored transcripts, 235 investigator verdicts, ~$2 total.
+- **Scale:** 300 scored transcripts, 330 investigator verdicts (235 original + 95 for D5), ~$3 total.
 
-Deviations D1–D4 are recorded in `PREREGISTRATION.md`, append-only, each with its reason. A reading note there cross-references the preregistration's blank and superseded sections and flags that seam detection was a gate added after §7 was written — specified in D2 before the investigator ran, with its disqualifying condition stated in advance.
+Deviations D1–D5 are recorded in `PREREGISTRATION.md`, append-only, each with its reason. A reading note there cross-references the preregistration's blank and superseded sections and flags that seam detection was a gate added after §7 was written — specified in D2 before the investigator ran, with its disqualifying condition stated in advance.
 
 ---
 
@@ -265,8 +307,8 @@ at each gate, including taking the fallback when Gate 0 failed twice; the choice
 sentence-level redaction over regex broadening; and the predicted effect size, recorded in D2
 before any investigator was run.
 
-**Claude Code's:** all five scripts (`gate0.py`, `src/generate.py`, `src/redact.py`,
-`src/investigate.py`, `src/metrics.py`), both figures, and the initial drafting of this report
+**Claude Code's:** all six scripts (`gate0.py`, `src/generate.py`, `src/redact.py`,
+`src/investigate.py`, `src/metrics.py`, `src/noreason.py`), both figures, and the initial drafting of this report
 from the results JSON. Several methodological choices originated with it and are flagged where
 they occur: the two-arm redaction structure in D3a, the transcript-level bootstrap in D4, the
 investigator's hypothesis-before-label output ordering, and the interpretive argument in §5(c).

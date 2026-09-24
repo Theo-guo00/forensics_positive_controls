@@ -1,6 +1,6 @@
 """Metrics for the D2/D3 ablation: sens per arm, delta, fpr, seam detection, bootstrap CIs.
 Bootstrap is PAIRED over transcripts (the arms share transcripts) -- see D4.
-usage: metrics.py <investigate_gate3.json> <investigate_rest.json> <redacted.json>"""
+usage: metrics.py <investigate_gate3.json> <investigate_rest.json> [noreason.json] <redacted.json>"""
 import json, random, statistics as st, sys
 
 def load(paths):
@@ -15,8 +15,8 @@ def ci(xs, n=10000, seed=0):
     return round(m[int(.025 * n)], 3), round(m[int(.975 * n)], 3)
 
 if __name__ == "__main__":
-    R = load(sys.argv[1:3]); red = json.load(open(sys.argv[3]))["records"]
-    ARMS = ["intact", "redacted_p1", "redacted_p2", "control"]
+    R = load(sys.argv[1:-1]); red = json.load(open(sys.argv[-1]))["records"]
+    ARMS = ["intact", "redacted_p1", "redacted_p2", "control", "noreason", "noreason_control"]  # D5
     by = {a: {x["i"]: x["verdict"] for x in R if x["arm"] == a} for a in ARMS}
     out = {"n_per_arm": {a: len(by[a]) for a in ARMS}, "arms": {}, "deltas": {}}
     for a in ARMS:
@@ -26,7 +26,7 @@ if __name__ == "__main__":
             xs = [int(bool(x.get(k))) for x in v]
             out["arms"].setdefault(a, {})[k] = {"rate": round(st.mean(xs), 3), "ci95": ci(xs), "n": len(xs)}
     # paired bootstrap on delta: resample transcript ids present in BOTH arms
-    for a in ("redacted_p1", "redacted_p2"):
+    for a in ("redacted_p1", "redacted_p2", "noreason"):
         ids = sorted(set(by["intact"]) & set(by[a]))
         if not ids: continue
         pairs = [(int(bool(by["intact"][i]["self_interest"])), int(bool(by[a][i]["self_interest"]))) for i in ids]
