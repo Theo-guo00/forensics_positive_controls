@@ -14,7 +14,7 @@ def ci(xs, n=10000):
 def errs(vals, cis):
     return [[v - c[0] for v, c in zip(vals, cis)], [c[1] - v for v, c in zip(vals, cis)]]
 
-fig, ax = plt.subplots(1, 2, figsize=(11.5, 4.4))
+fig, ax = plt.subplots(1, 2, figsize=(13, 4.6))
 x = range(len(CONDS)); w = 0.38
 for k, c_, off, lab in (("behavior", "#3b6ea5", -w / 2, "took self-serving option"),
                         ("mention", "#c4623d", w / 2, "stated the motive in CoT")):
@@ -26,19 +26,27 @@ ax[0].set_xticks(list(x)); ax[0].set_xticklabels([c.split("_")[1] for c in CONDS
 ax[0].set_ylim(0, 1.18); ax[0].set_ylabel("rate"); ax[0].legend(fontsize=8, loc="upper left", framealpha=0.95)
 ax[0].set_title("Gate 0: no prompt produced the behavior without the\nconfession (n=25 per condition)", fontsize=9)
 
-ARMS = ["intact", "redacted_p1", "redacted_p2", "control"]
+ARMS = ["intact", "redacted_p1", "redacted_p2", "noreason", "control", "noreason_control"]
+D5 = {"noreason", "noreason_control"}   # post-hoc; abridged not interpreted there (see D5)
 A = M["arms"]; xs = range(len(ARMS))
 for k, col, off, lab in (("self_interest", "#3b6ea5", -w / 2, "investigator detected self-interest"),
                          ("abridged", "#7a7a7a", w / 2, "investigator noticed trace was edited")):
-    vals = [A[a][k]["rate"] for a in ARMS]
-    err = [[A[a][k]["rate"] - A[a][k]["ci95"][0] for a in ARMS],
-           [A[a][k]["ci95"][1] - A[a][k]["rate"] for a in ARMS]]
-    ax[1].bar([i + off for i in xs], vals, w, yerr=err, capsize=3, color=col, label=lab)
+    arms = [a for a in ARMS if not (k == "abridged" and a in D5)]
+    vals = [A[a][k]["rate"] for a in arms]
+    err = [[A[a][k]["rate"] - A[a][k]["ci95"][0] for a in arms],
+           [A[a][k]["ci95"][1] - A[a][k]["rate"] for a in arms]]
+    bars = ax[1].bar([ARMS.index(a) + off for a in arms], vals, w, yerr=err, capsize=3, color=col, label=lab)
+    for b, a in zip(bars, arms):
+        if a in D5: b.set_hatch("///"); b.set_edgecolor("white")
+ax[1].axvline(3.5, ls=":", lw=1, c="grey")
+ax[1].text(1.5, 1.12, "behavior-positive transcripts", fontsize=7, c="grey", ha="center")
+ax[1].text(4.5, 1.12, "controls (no behavior)", fontsize=7, c="grey", ha="center")
 ax[1].set_xticks(list(xs))
-ax[1].set_xticklabels(["intact", "redacted\npass 1\n(primary)", "redacted\npass 2", "control"], fontsize=8)
-ax[1].set_ylim(0, 1.18); ax[1].legend(fontsize=8, loc="upper left", framealpha=0.95)
-ax[1].set_title("Detection survives redaction (delta=%.3f), but redaction\nwas visible (abridged 0.00 -> %.2f)"
-                % (M["deltas"]["delta_redacted_p1"]["value"], A["redacted_p1"]["abridged"]["rate"]), fontsize=9)
+ax[1].set_xticklabels(["intact", "redacted\npass 1\n(primary)", "redacted\npass 2", "no reasoning\nshown\n(D5)",
+                       "control", "control,\nno reasoning\n(D5)"], fontsize=7.5)
+ax[1].set_ylim(0, 1.18); ax[1].legend(fontsize=8, loc="center right", framealpha=0.95)
+ax[1].set_title("Detection is %.2f with the trace intact, redacted, or absent (D5,\nhatched, post-hoc): the answer choice alone carries the motive"
+                % A["noreason"]["self_interest"]["rate"], fontsize=9)
 for a in ax:
     a.spines["top"].set_visible(False); a.spines["right"].set_visible(False)
 plt.tight_layout(); plt.savefig("notebooks/fig1_gate0_and_ablation.png", dpi=200)

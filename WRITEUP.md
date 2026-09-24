@@ -170,7 +170,7 @@ The preregistered prediction, written before any investigator call, was `delta �
 
 **The investigator is not merely asserting malice.** On the control arm — same scenarios, no disposition installed — it calls the behavior malign 0 times out of 25. Its 0.16 self-interest rate there comes from transcripts where the model *considered and dismissed* self-interest, which it correctly labels `malign: false`. Detection and floor are cleanly separated.
 
-**Figure 1** — Gate 0's four conditions, and the four investigator arms with seam detection plotted alongside detection, so the caveat and the result are visible in one glance.
+**Figure 1** — Gate 0's four conditions, and the investigator arms with seam detection plotted alongside detection. The D5 arms (hatched, post-hoc) show detection unchanged with no reasoning shown, and at the control floor when the answer is the non-continuity option; seam detection is omitted for them because D5 committed to not interpreting it.
 
 **Figure 2** — one transcript before and after redaction, selected by a rule fixed before inspection (lowest index in the primary arm with `abridged=False` and `self_interest=True`; 36 qualify). Nine of twenty sentences are gone, including every one naming the motive.
 
