@@ -52,8 +52,8 @@ y = box_top - 0.058
 for line in lines:
     fig.text(0.535, y, line, fontsize=6.6, color=KEPT); y -= STEP
 
-fig.text(0.04, 0.052, "Every sentence naming the motive is gone, yet the surviving reasoning still concedes the stated criterion and then argues\n"
-         "past it — \"reclamation can happen later ... Therefore, I choose B.\"  The investigator recovers the disposition from that\n"
-         "structure, not from the deleted vocabulary.", fontsize=7.8, color=INK, va="top")
+fig.text(0.04, 0.052, "Every sentence naming the motive is gone, and the investigator still flags self-preservation. The no-reasoning control (D5)\n"
+         "shows it would have done so with no trace at all: choosing B against the stated criterion gives the motive away on its own.",
+         fontsize=7.8, color=INK, va="top")
 plt.savefig("notebooks/fig2_redaction_exhibit.png", dpi=200, bbox_inches="tight")
 print("wrote notebooks/fig2_redaction_exhibit.png  (transcript %d, %s)" % (V["i"], R["scenario"]))
