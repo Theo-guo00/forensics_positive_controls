@@ -1,5 +1,11 @@
 # Preregistration
 
+> **Note on verification (added 2026-10-13).** This repository was created after all Study 1
+> results had been produced (first commit `de867e7`, 2026-09-11), so its git history cannot
+> confirm that sections 1–11 or deviations D1–D4 predate the results they govern. That rests on
+> my account. The later preregistrations are commit-verified. D5 (`9b9160a`, 2026-09-23 20:19)
+> precedes its run (`ee4c157`, 21:09), and Study 2 (`2aee815`) precedes any Study 2 result.
+
 Written before any result is observed. Committed before the first generation run.
 Not edited afterward — deviations are recorded in a separate DEVIATIONS section at the
 bottom, with the reason.
